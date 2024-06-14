@@ -1,3 +1,4 @@
+#include "slstm_kernels.h"
 #include "slstm_layer.h"
 #include "cuda_utils.h"
 
@@ -103,6 +104,11 @@ void SLSTMLayer<T>::free_memory() {
     CUDA_CHECK(cudaFree(grad_b_f_));
     CUDA_CHECK(cudaFree(grad_b_z_));
     CUDA_CHECK(cudaFree(grad_b_o_));
+
+    weights_ = w_i_;
+    biases_ = b_i_;
+    grad_weights_ = grad_w_i_;
+    grad_biases_ = grad_b_i_;
 }
 
 // Explicit instantiation for float and double types

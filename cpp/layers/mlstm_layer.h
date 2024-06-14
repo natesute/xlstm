@@ -9,6 +9,11 @@ public:
     MLSTMLayer(int input_size, int hidden_size);
     ~MLSTMLayer();
 
+    const T* get_weights() const { return weights_; }
+    const T* get_biases() const { return biases_; }
+    const T* get_grad_weights() const { return grad_weights_; }
+    const T* get_grad_biases() const { return grad_biases_; }
+
     void forward(const T* input, const T* h_prev, const T* C_prev, const T* n_prev,
                  T* h, T* C, T* n);
     void backward(const T* grad_h, const T* C, const T* n, const T* input,
@@ -17,6 +22,11 @@ public:
 private:
     int input_size_;
     int hidden_size_;
+
+    T* weights_;
+    T* biases_;
+    T* grad_weights_;
+    T* grad_biases_;
 
     T* w_k_;
     T* w_v_;

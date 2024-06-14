@@ -21,8 +21,15 @@ set(CUDA_SOURCES
     kernels/block_kernels.cu
 )
 
+# CUDA header files
+set(CUDA_HEADERS
+    kernels/slstm_kernels.h
+    kernels/mlstm_kernels.h
+    kernels/block_kernels.h
+)
+
 # CUDA library target
-add_library(xlstm_cuda STATIC ${CUDA_SOURCES})
+add_library(xlstm_cuda STATIC ${CUDA_SOURCES} ${CUDA_HEADERS})
 
 # Set CUDA separable compilation
 set_target_properties(xlstm_cuda PROPERTIES CUDA_SEPARABLE_COMPILATION ON)

@@ -37,6 +37,7 @@ target_link_libraries(example_xlstm_model xlstm_cpp)
 target_include_directories(xlstm_cpp PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}/cuda
   ${CMAKE_CURRENT_SOURCE_DIR}/cuda/utils
+  ${CMAKE_CURRENT_SOURCE_DIR}/cuda/kernels
   ${CMAKE_CURRENT_SOURCE_DIR}/cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/cpp/utils
   ${CMAKE_CURRENT_SOURCE_DIR}/cpp/layers

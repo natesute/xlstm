@@ -7,7 +7,7 @@ XLSTMModel<T>::XLSTMModel(int input_size, int hidden_size, int proj_size,
     : input_size_(input_size), hidden_size_(hidden_size), proj_size_(proj_size), num_layers_(num_layers) {
     allocate_memory();
 
-    for (int i = 0; i < num_layers; ++i) {
+    for (int i = 0; i < num_layers_; ++i) {
         xlstm_blocks_.push_back(new XLSTMBlock<T>(i == 0 ? input_size : hidden_size,
                                                   hidden_size, proj_size, use_mlstm_vec[i]));
     }
@@ -17,7 +17,7 @@ template <typename T>
 XLSTMModel<T>::~XLSTMModel() {
     free_memory();
 
-    for (int i = 0; i < num_layers; ++i) {
+    for (int i = 0; i < num_layers_; ++i) {
         delete xlstm_blocks_[i];
     }
 }
@@ -29,7 +29,7 @@ void XLSTMModel<T>::forward(const T* input, T* output) {
     T* C_prev = C_states_[0];
     T* n_prev = n_states_[0];
 
-    for (int i = 0; i < num_layers; ++i) {
+    for (int i = 0; i < num_layers_; ++i) {
         xlstm_blocks_[i]->forward(i == 0 ? input : h_states_[i - 1],
                                   h_prev, c_prev, C_prev, n_prev,
                                   h_states_[i], c_states_[i], C_states_[i], n_states_[i]);
@@ -40,14 +40,14 @@ void XLSTMModel<T>::forward(const T* input, T* output) {
         n_prev = n_states_[i];
     }
 
-    CUDA_CHECK(cudaMemcpy(output, h_states_[num_layers - 1], hidden_size_ * sizeof(T), cudaMemcpyDeviceToDevice));
+    CUDA_CHECK(cudaMemcpy(output, h_states_[num_layers_ - 1], hidden_size_ * sizeof(T), cudaMemcpyDeviceToDevice));
 }
 
 template <typename T>
 void XLSTMModel<T>::backward(const T* grad_output, T* grad_input) {
-    CUDA_CHECK(cudaMemcpy(grad_h_states_[num_layers - 1], grad_output, hidden_size_ * sizeof(T), cudaMemcpyDeviceToDevice));
+    CUDA_CHECK(cudaMemcpy(grad_h_states_[num_layers_ - 1], grad_output, hidden_size_ * sizeof(T), cudaMemcpyDeviceToDevice));
 
-    for (int i = num_layers - 1; i >= 0; --i) {
+    for (int i = num_layers_ - 1; i >= 0; --i) {
         xlstm_blocks_[i]->backward(grad_h_states_[i],
                                    h_states_[i], c_states_[i], C_states_[i], n_states_[i],
                                    i == 0 ? nullptr : h_states_[i - 1],
@@ -59,7 +59,7 @@ void XLSTMModel<T>::backward(const T* grad_output, T* grad_input) {
 
 template <typename T>
 void XLSTMModel<T>::allocate_memory() {
-    for (int i = 0; i < num_layers; ++i) {
+    for (int i = 0; i < num_layers_; ++i) {
         T* h_state;
         T* c_state;
         T* C_state;
@@ -93,7 +93,7 @@ void XLSTMModel<T>::allocate_memory() {
 
 template <typename T>
 void XLSTMModel<T>::free_memory() {
-    for (int i = 0; i < num_layers; ++i) {
+    for (int i = 0; i < num_layers_; ++i) {
         CUDA_CHECK(cudaFree(h_states_[i]));
         CUDA_CHECK(cudaFree(c_states_[i]));
         CUDA_CHECK(cudaFree(C_states_[i]));

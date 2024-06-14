@@ -9,6 +9,7 @@ include_directories(utils)
 include_directories(layers)
 include_directories(blocks)
 include_directories(models)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../cuda/kernels)
 
 # Source files
 set(XLSTM_SOURCES
