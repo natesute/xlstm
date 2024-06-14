@@ -1,42 +1,52 @@
-cmake_minimum_required(VERSION 3.8)
-project(xLSTM)
+cmake_minimum_required(VERSION 3.18)  # Recommended for better CUDA support
+project(xLSTM LANGUAGES CXX CUDA)  # Explicitly state CUDA as a project language
 
-# Set C++ compiler flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -std=c++14")
+set(CMAKE_CUDA_ARCHITECTURES 80)  # Ensure your hardware supports this
 
-# Include directories
-include_directories(cpp)
-include_directories(cpp/utils)
-include_directories(cpp/layers)
-include_directories(cpp/blocks)
-include_directories(cpp/models)
-
-# Recurse into the CUDA and C++ subdirectories
+# Add subdirectories containing project modules
 add_subdirectory(cuda)
 add_subdirectory(cpp)
 
 # Executable targets for tests
-add_executable(test_slstm tests/test_slstm.cpp)
+add_executable(test_slstm cpp/tests/test_slstm.cpp)
 target_link_libraries(test_slstm xlstm_cpp)
 
-add_executable(test_mlstm tests/test_mlstm.cpp)
+add_executable(test_mlstm cpp/tests/test_mlstm.cpp)
 target_link_libraries(test_mlstm xlstm_cpp)
 
-add_executable(test_xlstm_block tests/test_xlstm_block.cpp)
+add_executable(test_xlstm_block cpp/tests/test_xlstm_block.cpp)
 target_link_libraries(test_xlstm_block xlstm_cpp)
 
-add_executable(test_xlstm_model tests/test_xlstm_model.cpp)
+add_executable(test_xlstm_model cpp/tests/test_xlstm_model.cpp)
 target_link_libraries(test_xlstm_model xlstm_cpp)
 
 # Executable targets for examples
-add_executable(example_slstm examples/example_slstm.cpp)
+add_executable(example_slstm cpp/examples/example_slstm.cpp)
 target_link_libraries(example_slstm xlstm_cpp)
 
-add_executable(example_mlstm examples/example_mlstm.cpp)
+add_executable(example_mlstm cpp/examples/example_mlstm.cpp)
 target_link_libraries(example_mlstm xlstm_cpp)
 
-add_executable(example_xlstm_block examples/example_xlstm_block.cpp)
+add_executable(example_xlstm_block cpp/examples/example_xlstm_block.cpp)
 target_link_libraries(example_xlstm_block xlstm_cpp)
 
-add_executable(example_xlstm_model examples/example_xlstm_model.cpp)
+add_executable(example_xlstm_model cpp/examples/example_xlstm_model.cpp)
 target_link_libraries(example_xlstm_model xlstm_cpp)
+
+# Define include directories for the xlstm_cpp library
+target_include_directories(xlstm_cpp PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}/cuda
+  ${CMAKE_CURRENT_SOURCE_DIR}/cuda/utils
+  ${CMAKE_CURRENT_SOURCE_DIR}/cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/cpp/utils
+  ${CMAKE_CURRENT_SOURCE_DIR}/cpp/layers
+  ${CMAKE_CURRENT_SOURCE_DIR}/cpp/blocks
+  ${CMAKE_CURRENT_SOURCE_DIR}/cpp/models
+)
+
+# Link CUDA libraries to xlstm_cpp (assuming xlstm_cuda is the CUDA library target)
+target_link_libraries(xlstm_cpp xlstm_cuda)
+
+# If xlstm_cuda uses any CUDA runtime libraries, link them here
+find_package(CUDAToolkit REQUIRED)
+target_link_libraries(xlstm_cpp CUDA::cudart)
