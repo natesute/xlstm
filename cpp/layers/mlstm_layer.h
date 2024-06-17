@@ -2,6 +2,7 @@
 #define MLSTM_LAYER_H
 
 #include <vector>
+#include "../cuda/kernels/mlstm_kernels.h"
 
 template <typename T>
 class MLSTMLayer {

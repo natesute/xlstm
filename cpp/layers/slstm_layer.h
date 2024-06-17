@@ -2,6 +2,7 @@
 #define SLSTM_LAYER_H
 
 #include <vector>
+#include "../cuda/kernels/slstm_kernels.h"
 
 template <typename T>
 class SLSTMLayer {
