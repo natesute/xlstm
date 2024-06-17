@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SLSTM_KERNELS_H
+#define SLSTM_KERNELS_H
 
 template <typename T>
 void launch_slstm_forward(const T *x,
@@ -61,3 +62,75 @@ void launch_slstm_backward(const T *grad_h,
                            int batch_size,
                            int input_size,
                            int hidden_size);
+
+
+#ifdef __CUDACC__
+// sLSTM forward pass kernel
+template <typename T>
+__global__ void slstm_forward_kernel(const T *__restrict__ x,
+                                     const T *__restrict__ h_prev,
+                                     const T *__restrict__ c_prev,
+                                     const T *__restrict__ n_prev,
+                                     T *__restrict__ c,
+                                     T *__restrict__ n,
+                                     T *__restrict__ h,
+                                     const T *__restrict__ w_i,
+                                     const T *__restrict__ w_f,
+                                     const T *__restrict__ w_z,
+                                     const T *__restrict__ w_o,
+                                     const T *__restrict__ r_i,
+                                     const T *__restrict__ r_f,
+                                     const T *__restrict__ r_z,
+                                     const T *__restrict__ r_o,
+                                     const T *__restrict__ b_i,
+                                     const T *__restrict__ b_f,
+                                     const T *__restrict__ b_z,
+                                     const T *__restrict__ b_o,
+                                     int batch_size,
+                                     int input_size,
+                                     int hidden_size);
+
+// sLSTM backward pass kernel
+template <typename T>
+__global__ void slstm_backward_kernel(const T *__restrict__ grad_h,
+                            const T *__restrict__ grad_c,
+                            const T *__restrict__ c,
+                            const T *__restrict__ n,
+                            const T *__restrict__ c_prev,
+                            const T *__restrict__ n_prev,
+                            const T *__restrict__ x,
+                            const T *__restrict__ h_prev,
+                            const T *__restrict__ w_i,
+                            const T *__restrict__ w_f,
+                            const T *__restrict__ w_z,
+                            const T *__restrict__ w_o,
+                            const T *__restrict__ r_i,
+                            const T *__restrict__ r_f,
+                            const T *__restrict__ r_z,
+                            const T *__restrict__ r_o,
+                            const T *__restrict__ b_i,
+                            const T *__restrict__ b_f,
+                            const T *__restrict__ b_z,
+                            const T *__restrict__ b_o,
+                            T *__restrict__ grad_x,
+                            T *__restrict__ grad_h_prev,
+                            T *__restrict__ grad_c_prev,
+                            T *__restrict__ grad_n_prev,
+                            T *__restrict__ grad_w_i,
+                            T *__restrict__ grad_w_f,
+                            T *__restrict__ grad_w_z,
+                            T *__restrict__ grad_w_o,
+                            T *__restrict__ grad_r_i,
+                            T *__restrict__ grad_r_f,
+                            T *__restrict__ grad_r_z,
+                            T *__restrict__ grad_r_o,
+                            T *__restrict__ grad_b_i,
+                            T *__restrict__ grad_b_f,
+                            T *__restrict__ grad_b_z,
+                            T *__restrict__ grad_b_o,
+                            int batch_size,
+                            int input_size,
+                            int hidden_size);
+#endif
+
+#endif // SLSTM_KERNELS_H

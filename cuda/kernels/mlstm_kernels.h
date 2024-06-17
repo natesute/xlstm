@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MLSTM_KERNELS_H
+#define MLSTM_KERNELS_H
 
 template <typename T>
 void launch_mlstm_forward(const T *x,
@@ -53,3 +54,71 @@ void launch_mlstm_backward(const T *grad_h,
                            int batch_size,
                            int input_size,
                            int hidden_size);
+
+
+#ifdef __CUDACC__
+// mLSTM forward pass kernel
+template <typename T>
+__global__ void mlstm_forward_kernel(const T *__restrict__ x,
+                          const T *__restrict__ h_prev,
+                          const T *__restrict__ C_prev,
+                          const T *__restrict__ n_prev,
+                          T *__restrict__ C,
+                          T *__restrict__ n,
+                          T *__restrict__ h,
+                          const T *__restrict__ w_k,
+                          const T *__restrict__ w_v,
+                          const T *__restrict__ w_q,
+                          const T *__restrict__ w_i,
+                          const T *__restrict__ w_f,
+                          const T *__restrict__ w_o,
+                          const T *__restrict__ b_k,
+                          const T *__restrict__ b_v,
+                          const T *__restrict__ b_q,
+                          const T *__restrict__ b_i,
+                          const T *__restrict__ b_f,
+                          const T *__restrict__ b_o,
+                          int batch_size,
+                          int input_size,
+                          int hidden_size);
+
+// mLSTM backward pass kernel
+template <typename T>
+__global__ void mlstm_backward_kernel(const T *__restrict__ grad_h,
+                            const T *__restrict__ C,
+                            const T *__restrict__ n,
+                            const T *__restrict__ x,
+                            const T *__restrict__ w_k,
+                            const T *__restrict__ w_v,
+                            const T *__restrict__ w_q,
+                            const T *__restrict__ w_i,
+                            const T *__restrict__ w_f,
+                            const T *__restrict__ w_o,
+                            const T *__restrict__ b_k,
+                            const T *__restrict__ b_v,
+                            const T *__restrict__ b_q,
+                            const T *__restrict__ b_i,
+                            const T *__restrict__ b_f,
+                            const T *__restrict__ b_o,
+                            T *__restrict__ grad_x,
+                            T *__restrict__ grad_C_prev,
+                            T *__restrict__ grad_n_prev,
+                            T *__restrict__ grad_w_k,
+                            T *__restrict__ grad_w_v,
+                            T *__restrict__ grad_w_q,
+                            T *__restrict__ grad_w_i,
+                            T *__restrict__ grad_w_f,
+                            T *__restrict__ grad_w_o,
+                            T *__restrict__ grad_b_k,
+                            T *__restrict__ grad_b_v,
+                            T *__restrict__ grad_b_q,
+                            T *__restrict__ grad_b_i,
+                            T *__restrict__ grad_b_f,
+                            T *__restrict__ grad_b_o,
+                            int batch_size,
+                            int input_size,
+                            int hidden_size);
+
+#endif // __CUDACC__
+
+#endif // MLSTM_KERNELS_H

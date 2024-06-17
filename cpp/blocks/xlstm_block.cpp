@@ -1,6 +1,6 @@
 #include "xlstm_block.h"
 #include "cuda_utils.h"
-#include "block_kernels.h"
+#include "xlstm_block.h"
 
 template <typename T>
 XLSTMBlock<T>::XLSTMBlock(int input_size, int hidden_size, int proj_size, bool use_mlstm)
@@ -45,15 +45,14 @@ void XLSTMBlock<T>::backward(const T* grad_h, const T* h, const T* c, const T* C
     launch_xlstm_block_backward(grad_h,
                                 h, c, C, n,
                                 input,
-                                w_proj_.get(), w_gate_.get(),
-                                use_mlstm_ ? slstm_layer_->get_weights() : slstm_layer_->get_biases(), mlstm_layer_->get_weights()
-                                grad_input.get(),
-                                grad_h_prev.get(), grad_c_prev.get(),
-                                grad_C_prev.get(), grad_n_prev.get(),
-                                grad_w_proj_.get(), grad_w_gate_.get(),
-                                grad_b_proj_.get(), grad_b_gate_.get(),
-
-                                use_mlstm_ ? slstm_layer_->get_grad_weights() : slstm_layer_->get_grad_biases(), mlstm_layer_->get_grad_weights(),
+                                w_proj_, w_gate_,
+                                slstm_layer_->get_weights(), mlstm_layer_->get_weights(),
+                                grad_input,
+                                grad_h_prev, grad_c_prev,
+                                grad_C_prev, grad_n_prev,
+                                grad_w_proj_, grad_w_gate_,
+                                grad_b_proj_, grad_b_gate_,
+                                slstm_layer_->get_grad_weights(), mlstm_layer_->get_grad_weights(),
                                 slstm_layer_->get_grad_biases(), mlstm_layer_->get_grad_biases(),
                                 1, input_size_, hidden_size_, proj_size_,
                                 use_mlstm_);

@@ -3,6 +3,7 @@
 
 #include "slstm_layer.h"
 #include "mlstm_layer.h"
+#include "../cuda/kernels/block_kernels.h"
 
 template <typename T>
 class XLSTMBlock {
