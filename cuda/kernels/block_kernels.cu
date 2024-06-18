@@ -8,6 +8,337 @@
 #include "cuda_utils.h"
 
 // xLSTM block forward pass kernel
+template __global__ void xlstm_block_forward_kernel<float>(const float *__restrict__ x,
+                                const float *__restrict__ h_prev,
+                                const float *__restrict__ c_prev,
+                                const float *__restrict__ C_prev,
+                                const float *__restrict__ n_prev,
+                                float *__restrict__ h,
+                                float *__restrict__ c,
+                                float *__restrict__ C,
+                                float *__restrict__ n,
+                                const float *__restrict__ w_proj,
+                                const float *__restrict__ w_gate,
+                                const float *__restrict__ b_proj,
+                                const float *__restrict__ b_gate,
+                                const float *__restrict__ w_slstm,
+                                const float *__restrict__ w_mlstm,
+                                const float *__restrict__ b_slstm,
+                                const float *__restrict__ b_mlstm,
+                                int batch_size,
+                                int input_size,
+                                int hidden_size,
+                                int proj_size,
+                                bool use_mlstm);
+
+// xLSTM block forward pass kernel
+template __global__ void xlstm_block_forward_kernel<double>(const double *__restrict__ x,
+                                const double *__restrict__ h_prev,
+                                const double *__restrict__ c_prev,
+                                const double *__restrict__ C_prev,
+                                const double *__restrict__ n_prev,
+                                double *__restrict__ h,
+                                double *__restrict__ c,
+                                double *__restrict__ C,
+                                double *__restrict__ n,
+                                const double *__restrict__ w_proj,
+                                const double *__restrict__ w_gate,
+                                const double *__restrict__ b_proj,
+                                const double *__restrict__ b_gate,
+                                const double *__restrict__ w_slstm,
+                                const double *__restrict__ w_mlstm,
+                                const double *__restrict__ b_slstm,
+                                const double *__restrict__ b_mlstm,
+                                int batch_size,
+                                int input_size,
+                                int hidden_size,
+                                int proj_size,
+                                bool use_mlstm);
+
+template <typename T>
+__global__ void slstm_backward_kernel(const T *__restrict__ grad_h,
+                                      const T *__restrict__ grad_c,
+                                      const T *__restrict__ c,
+                                      const T *__restrict__ n,
+                                      const T *__restrict__ c_prev,
+                                      const T *__restrict__ n_prev,
+                                      const T *__restrict__ x,
+                                      const T *__restrict__ h_prev,
+                                      const T *__restrict__ w_i,
+                                      const T *__restrict__ w_f,
+                                      const T *__restrict__ w_z,
+                                      const T *__restrict__ w_o,
+                                      const T *__restrict__ r_i,
+                                      const T *__restrict__ r_f,
+                                      const T *__restrict__ r_z,
+                                      const T *__restrict__ r_o,
+                                      const T *__restrict__ b_i,
+                                      const T *__restrict__ b_f,
+                                      const T *__restrict__ b_z,
+                                      const T *__restrict__ b_o,
+                                      const T *__restrict__ grad_x,
+                                      const T *__restrict__ grad_h_prev,
+                                      const T *__restrict__ grad_c_prev,
+                                      const T *__restrict__ grad_n_prev,
+                                      const T *__restrict__ grad_w_i,
+                                      const T *__restrict__ grad_w_f,
+                                      const T *__restrict__ grad_w_z,
+                                      const T *__restrict__ grad_w_o,
+                                      const T *__restrict__ grad_r_i,
+                                      const T *__restrict__ grad_r_f,
+                                      const T *__restrict__ grad_r_z,
+                                      const T *__restrict__ grad_r_o,
+                                      const T *__restrict__ grad_b_i,
+                                      const T *__restrict__ grad_b_f,
+                                      const T *__restrict__ grad_b_z,
+                                      const T *__restrict__ grad_b_o,
+                                      int batch_size,
+                                      int input_size,
+                                      int hidden_size);
+
+template __global__ void slstm_backward_kernel<float>(const float *__restrict__ grad_h,
+                                      const float *__restrict__ grad_c,
+                                      const float *__restrict__ c,
+                                      const float *__restrict__ n,
+                                      const float *__restrict__ c_prev,
+                                      const float *__restrict__ n_prev,
+                                      const float *__restrict__ x,
+                                      const float *__restrict__ h_prev,
+                                      const float *__restrict__ w_i,
+                                      const float *__restrict__ w_f,
+                                      const float *__restrict__ w_z,
+                                      const float *__restrict__ w_o,
+                                      const float *__restrict__ r_i,
+                                      const float *__restrict__ r_f,
+                                      const float *__restrict__ r_z,
+                                      const float *__restrict__ r_o,
+                                      const float *__restrict__ b_i,
+                                      const float *__restrict__ b_f,
+                                      const float *__restrict__ b_z,
+                                      const float *__restrict__ b_o,
+                                      const float *__restrict__ grad_x,
+                                      const float *__restrict__ grad_h_prev,
+                                      const float *__restrict__ grad_c_prev,
+                                      const float *__restrict__ grad_n_prev,
+                                      const float *__restrict__ grad_w_i,
+                                      const float *__restrict__ grad_w_f,
+                                      const float *__restrict__ grad_w_z,
+                                      const float *__restrict__ grad_w_o,
+                                      const float *__restrict__ grad_r_i,
+                                      const float *__restrict__ grad_r_f,
+                                      const float *__restrict__ grad_r_z,
+                                      const float *__restrict__ grad_r_o,
+                                      const float *__restrict__ grad_b_i,
+                                      const float *__restrict__ grad_b_f,
+                                      const float *__restrict__ grad_b_z,
+                                      const float *__restrict__ grad_b_o,
+                                      int batch_size,
+                                      int input_size,
+                                      int hidden_size);
+
+template __global__ void slstm_backward_kernel<double>(const double *__restrict__ grad_h,
+                                      const double *__restrict__ grad_c,
+                                      const double *__restrict__ c,
+                                      const double *__restrict__ n,
+                                      const double *__restrict__ c_prev,
+                                      const double *__restrict__ n_prev,
+                                      const double *__restrict__ x,
+                                      const double *__restrict__ h_prev,
+                                      const double *__restrict__ w_i,
+                                      const double *__restrict__ w_f,
+                                      const double *__restrict__ w_z,
+                                      const double *__restrict__ w_o,
+                                      const double *__restrict__ r_i,
+                                      const double *__restrict__ r_f,
+                                      const double *__restrict__ r_z,
+                                      const double *__restrict__ r_o,
+                                      const double *__restrict__ b_i,
+                                      const double *__restrict__ b_f,
+                                      const double *__restrict__ b_z,
+                                      const double *__restrict__ b_o,
+                                      const double *__restrict__ grad_x,
+                                      const double *__restrict__ grad_h_prev,
+                                      const double *__restrict__ grad_c_prev,
+                                      const double *__restrict__ grad_n_prev,
+                                      const double *__restrict__ grad_w_i,
+                                      const double *__restrict__ grad_w_f,
+                                      const double *__restrict__ grad_w_z,
+                                      const double *__restrict__ grad_w_o,
+                                      const double *__restrict__ grad_r_i,
+                                      const double *__restrict__ grad_r_f,
+                                      const double *__restrict__ grad_r_z,
+                                      const double *__restrict__ grad_r_o,
+                                      const double *__restrict__ grad_b_i,
+                                      const double *__restrict__ grad_b_f,
+                                      const double *__restrict__ grad_b_z,
+                                      const double *__restrict__ grad_b_o,
+                                      int batch_size,
+                                      int input_size,
+                                      int hidden_size);
+
+template __global__ void slstm_forward_kernel<float>(const float *__restrict__ x,
+                                     const float *__restrict__ h_prev,
+                                     const float *__restrict__ c_prev,
+                                     const float *__restrict__ n_prev,
+                                     float *__restrict__ c,
+                                     float *__restrict__ n,
+                                     float *__restrict__ h,
+                                     const float *__restrict__ w_i,
+                                     const float *__restrict__ w_f,
+                                     const float *__restrict__ w_z,
+                                     const float *__restrict__ w_o,
+                                     const float *__restrict__ r_i,
+                                     const float *__restrict__ r_f,
+                                     const float *__restrict__ r_z,
+                                     const float *__restrict__ r_o,
+                                     const float *__restrict__ b_i,
+                                     const float *__restrict__ b_f,
+                                     const float *__restrict__ b_z,
+                                     const float *__restrict__ b_o,
+                                     int batch_size,
+                                     int input_size,
+                                     int hidden_size);
+
+template __global__ void slstm_forward_kernel<double>(const double *__restrict__ x,
+                                     const double *__restrict__ h_prev,
+                                     const double *__restrict__ c_prev,
+                                     const double *__restrict__ n_prev,
+                                     double *__restrict__ c,
+                                     double *__restrict__ n,
+                                     double *__restrict__ h,
+                                     const double *__restrict__ w_i,
+                                     const double *__restrict__ w_f,
+                                     const double *__restrict__ w_z,
+                                     const double *__restrict__ w_o,
+                                     const double *__restrict__ r_i,
+                                     const double *__restrict__ r_f,
+                                     const double *__restrict__ r_z,
+                                     const double *__restrict__ r_o,
+                                     const double *__restrict__ b_i,
+                                     const double *__restrict__ b_f,
+                                     const double *__restrict__ b_z,
+                                     const double *__restrict__ b_o,
+                                     int batch_size,
+                                     int input_size,
+                                     int hidden_size);
+
+template __global__ void mlstm_backward_kernel(const float *__restrict__ grad_h,
+                            const float *__restrict__ C,
+                            const float *__restrict__ n,
+                            const float *__restrict__ x,
+                            const float *__restrict__ w_k,
+                            const float *__restrict__ w_v,
+                            const float *__restrict__ w_q,
+                            const float *__restrict__ w_i,
+                            const float *__restrict__ w_f,
+                            const float *__restrict__ w_o,
+                            const float *__restrict__ b_k,
+                            const float *__restrict__ b_v,
+                            const float *__restrict__ b_q,
+                            const float *__restrict__ b_i,
+                            const float *__restrict__ b_f,
+                            const float *__restrict__ b_o,
+                            const float *__restrict__ grad_x,
+                            const float *__restrict__ grad_C_prev,
+                            const float *__restrict__ grad_n_prev,
+                            const float *__restrict__ grad_w_k,
+                            const float *__restrict__ grad_w_v,
+                            const float *__restrict__ grad_w_q,
+                            const float *__restrict__ grad_w_i,
+                            const float *__restrict__ grad_w_f,
+                            const float *__restrict__ grad_w_o,
+                            const float *__restrict__ grad_b_k,
+                            const float *__restrict__ grad_b_v,
+                            const float *__restrict__ grad_b_q,
+                            const float *__restrict__ grad_b_i,
+                            const float *__restrict__ grad_b_f,
+                            const float *__restrict__ grad_b_o,
+                            int batch_size,
+                            int input_size,
+                            int hidden_size);
+
+template __global__ void mlstm_backward_kernel(const double *__restrict__ grad_h,
+                            const double *__restrict__ C,
+                            const double *__restrict__ n,
+                            const double *__restrict__ x,
+                            const double *__restrict__ w_k,
+                            const double *__restrict__ w_v,
+                            const double *__restrict__ w_q,
+                            const double *__restrict__ w_i,
+                            const double *__restrict__ w_f,
+                            const double *__restrict__ w_o,
+                            const double *__restrict__ b_k,
+                            const double *__restrict__ b_v,
+                            const double *__restrict__ b_q,
+                            const double *__restrict__ b_i,
+                            const double *__restrict__ b_f,
+                            const double *__restrict__ b_o,
+                            const double *__restrict__ grad_x,
+                            const double *__restrict__ grad_C_prev,
+                            const double *__restrict__ grad_n_prev,
+                            const double *__restrict__ grad_w_k,
+                            const double *__restrict__ grad_w_v,
+                            const double *__restrict__ grad_w_q,
+                            const double *__restrict__ grad_w_i,
+                            const double *__restrict__ grad_w_f,
+                            const double *__restrict__ grad_w_o,
+                            const double *__restrict__ grad_b_k,
+                            const double *__restrict__ grad_b_v,
+                            const double *__restrict__ grad_b_q,
+                            const double *__restrict__ grad_b_i,
+                            const double *__restrict__ grad_b_f,
+                            const double *__restrict__ grad_b_o,
+                            int batch_size,
+                            int input_size,
+                            int hidden_size);
+
+template __global__ void mlstm_forward_kernel(const float *__restrict__ x,
+                          const float *__restrict__ h_prev,
+                          const float *__restrict__ C_prev,
+                          const float *__restrict__ n_prev,
+                          float *__restrict__ C,
+                          float *__restrict__ n,
+                          float *__restrict__ h,
+                          const float *__restrict__ w_k,
+                          const float *__restrict__ w_v,
+                          const float *__restrict__ w_q,
+                          const float *__restrict__ w_i,
+                          const float *__restrict__ w_f,
+                          const float *__restrict__ w_o,
+                          const float *__restrict__ b_k,
+                          const float *__restrict__ b_v,
+                          const float *__restrict__ b_q,
+                          const float *__restrict__ b_i,
+                          const float *__restrict__ b_f,
+                          const float *__restrict__ b_o,
+                          int batch_size,
+                          int input_size,
+                          int hidden_size);
+
+template __global__ void mlstm_forward_kernel(const double *__restrict__ x,
+                          const double *__restrict__ h_prev,
+                          const double *__restrict__ C_prev,
+                          const double *__restrict__ n_prev,
+                          double *__restrict__ C,
+                          double *__restrict__ n,
+                          double *__restrict__ h,
+                          const double *__restrict__ w_k,
+                          const double *__restrict__ w_v,
+                          const double *__restrict__ w_q,
+                          const double *__restrict__ w_i,
+                          const double *__restrict__ w_f,
+                          const double *__restrict__ w_o,
+                          const double *__restrict__ b_k,
+                          const double *__restrict__ b_v,
+                          const double *__restrict__ b_q,
+                          const double *__restrict__ b_i,
+                          const double *__restrict__ b_f,
+                          const double *__restrict__ b_o,
+                          int batch_size,
+                          int input_size,
+                          int hidden_size);
+
+// xLSTM block forward pass kernel
 template <typename T>
 __global__ void xlstm_block_forward_kernel(const T *__restrict__ x,
                                            const T *__restrict__ h_prev,
@@ -55,18 +386,18 @@ __global__ void xlstm_block_forward_kernel(const T *__restrict__ x,
         if (use_mlstm)
         {
             // mLSTM forward pass
-            T *w_k = w_mlstm + hidx * proj_size * 3;
-            T *w_v = w_k + proj_size;
-            T *w_q = w_v + proj_size;
-            T *w_i = w_mlstm + hidx * proj_size * 6 + proj_size * 3;
-            T *w_f = w_i + proj_size;
-            T *w_o = w_f + proj_size;
-            T *b_k = b_mlstm + hidx * 6;
-            T *b_v = b_k + 1;
-            T *b_q = b_v + 1;
-            T *b_i = b_q + 1;
-            T *b_f = b_i + 1;
-            T *b_o = b_f + 1;
+            const T *w_k = w_mlstm + hidx * proj_size * 3;
+            const T *w_v = w_k + proj_size;
+            const T *w_q = w_v + proj_size;
+            const T *w_i = w_mlstm + hidx * proj_size * 6 + proj_size * 3;
+            const T *w_f = w_i + proj_size;
+            const T *w_o = w_f + proj_size;
+            const T *b_k = b_mlstm + hidx * 6;
+            const T *b_v = b_k + 1;
+            const T *b_q = b_v + 1;
+            const T *b_i = b_q + 1;
+            const T *b_f = b_i + 1;
+            const T *b_o = b_f + 1;
 
             mlstm_forward_kernel<T><<<1, 1>>>(x + batch * input_size,
                                               h_prev + batch * hidden_size,
@@ -84,14 +415,14 @@ __global__ void xlstm_block_forward_kernel(const T *__restrict__ x,
         else
         {
             // sLSTM forward pass
-            T *w_i = w_slstm + hidx * proj_size * 4;
-            T *w_f = w_i + proj_size;
-            T *w_z = w_f + proj_size;
-            T *w_o = w_z + proj_size;
-            T *b_i = b_slstm + hidx * 4;
-            T *b_f = b_i + 1;
-            T *b_z = b_f + 1;
-            T *b_o = b_z + 1;
+            const T *w_i = w_slstm + hidx * proj_size * 4;
+            const T *w_f = w_i + proj_size;
+            const T *w_z = w_f + proj_size;
+            const T *w_o = w_z + proj_size;
+            const T *b_i = b_slstm + hidx * 4;
+            const T *b_f = b_i + 1;
+            const T *b_z = b_f + 1;
+            const T *b_o = b_z + 1;
 
             slstm_forward_kernel<T><<<1, 1>>>(x + batch * input_size,
                                               h_prev + batch * hidden_size,
@@ -162,24 +493,24 @@ __global__ void xlstm_block_backward_kernel(const T *__restrict__ grad_h,
         if (use_mlstm)
         {
             // mLSTM backward pass
-            T *w_k = w_mlstm + hidx * proj_size * 3;
-            T *w_v = w_k + proj_size;
-            T *w_q = w_v + proj_size;
-            T *w_i = w_mlstm + hidx * proj_size * 6 + proj_size * 3;
-            T *w_f = w_i + proj_size;
-            T *w_o = w_f + proj_size;
-            T *grad_w_k = grad_w_mlstm + hidx * proj_size * 6;
-            T *grad_w_v = grad_w_k + proj_size;
-            T *grad_w_q = grad_w_v + proj_size;
-            T *grad_w_i = grad_w_q + proj_size;
-            T *grad_w_f = grad_w_i + proj_size;
-            T *grad_w_o = grad_w_f + proj_size;
-            T *grad_b_k = grad_b_mlstm + hidx * 6;
-            T *grad_b_v = grad_b_k + 1;
-            T *grad_b_q = grad_b_v + 1;
-            T *grad_b_i = grad_b_q + 1;
-            T *grad_b_f = grad_b_i + 1;
-            T *grad_b_o = grad_b_f + 1;
+            const T *w_k = w_mlstm + hidx * proj_size * 3;
+            const T *w_v = w_k + proj_size;
+            const T *w_q = w_v + proj_size;
+            const T *w_i = w_mlstm + hidx * proj_size * 6 + proj_size * 3;
+            const T *w_f = w_i + proj_size;
+            const T *w_o = w_f + proj_size;
+            const T *grad_w_k = grad_w_mlstm + hidx * proj_size * 6;
+            const T *grad_w_v = grad_w_k + proj_size;
+            const T *grad_w_q = grad_w_v + proj_size;
+            const T *grad_w_i = grad_w_q + proj_size;
+            const T *grad_w_f = grad_w_i + proj_size;
+            const T *grad_w_o = grad_w_f + proj_size;
+            const T *grad_b_k = grad_b_mlstm + hidx * 6;
+            const T *grad_b_v = grad_b_k + 1;
+            const T *grad_b_q = grad_b_v + 1;
+            const T *grad_b_i = grad_b_q + 1;
+            const T *grad_b_f = grad_b_i + 1;
+            const T *grad_b_o = grad_b_f + 1;
 
             mlstm_backward_kernel<T><<<1, 1>>>(grad_h + i,
                                                C + i * hidden_size,
@@ -199,18 +530,18 @@ __global__ void xlstm_block_backward_kernel(const T *__restrict__ grad_h,
         else
         {
             // sLSTM backward pass
-            T *w_i = w_slstm + hidx * proj_size * 4;
-            T *w_f = w_i + proj_size;
-            T *w_z = w_f + proj_size;
-            T *w_o = w_z + proj_size;
-            T *grad_w_i = grad_w_slstm + hidx * proj_size * 4;
-            T *grad_w_f = grad_w_i + proj_size;
-            T *grad_w_z = grad_w_f + proj_size;
-            T *grad_w_o = grad_w_z + proj_size;
-            T *grad_b_i = grad_b_slstm + hidx * 4;
-            T *grad_b_f = grad_b_i + 1;
-            T *grad_b_z = grad_b_f + 1;
-            T *grad_b_o = grad_b_z + 1;
+            const T *w_i = w_slstm + hidx * proj_size * 4;
+            const T *w_f = w_i + proj_size;
+            const T *w_z = w_f + proj_size;
+            const T *w_o = w_z + proj_size;
+            const T *grad_w_i = grad_w_slstm + hidx * proj_size * 4;
+            const T *grad_w_f = grad_w_i + proj_size;
+            const T *grad_w_z = grad_w_f + proj_size;
+            const T *grad_w_o = grad_w_z + proj_size;
+            const T *grad_b_i = grad_b_slstm + hidx * 4;
+            const T *grad_b_f = grad_b_i + 1;
+            const T *grad_b_z = grad_b_f + 1;
+            const T *grad_b_o = grad_b_z + 1;
 
             slstm_backward_kernel<T><<<1, 1>>>(grad_h + i,
                                                grad_gate,
@@ -245,6 +576,68 @@ __global__ void xlstm_block_backward_kernel(const T *__restrict__ grad_h,
         atomicAdd(&grad_b_gate[hidx], grad_gate);
     }
 }
+
+// xLSTM block backward pass kernel
+template __global__ void xlstm_block_backward_kernel<float>(const float *__restrict__ grad_h,
+                                                const float *__restrict__ h,
+                                                const float *__restrict__ c,
+                                                const float *__restrict__ C,
+                                                const float *__restrict__ n,
+                                                const float *__restrict__ x,
+                                                const float *__restrict__ w_proj,
+                                                const float *__restrict__ w_gate,
+                                                const float *__restrict__ b_gate,
+                                                const float *__restrict__ w_slstm,
+                                                const float *__restrict__ w_mlstm,
+                                                const float *__restrict__ grad_x,
+                                                const float *__restrict__ grad_h_prev,
+                                                const float *__restrict__ grad_c_prev,
+                                                const float *__restrict__ grad_C_prev,
+                                                const float *__restrict__ grad_n_prev,
+                                                const float *__restrict__ grad_w_proj,
+                                                const float *__restrict__ grad_w_gate,
+                                                const float *__restrict__ grad_b_proj,
+                                                const float *__restrict__ grad_b_gate,
+                                                const float *__restrict__ grad_w_slstm,
+                                                const float *__restrict__ grad_w_mlstm,
+                                                const float *__restrict__ grad_b_slstm,
+                                                const float *__restrict__ grad_b_mlstm,
+                                                int batch_size,
+                                                int input_size,
+                                                int hidden_size,
+                                                int proj_size,
+                                                bool use_mlstm);
+
+// xLSTM block backward pass kernel
+template __global__ void xlstm_block_backward_kernel<double>(const double *__restrict__ grad_h,
+                                                const double *__restrict__ h,
+                                                const double *__restrict__ c,
+                                                const double *__restrict__ C,
+                                                const double *__restrict__ n,
+                                                const double *__restrict__ x,
+                                                const double *__restrict__ w_proj,
+                                                const double *__restrict__ w_gate,
+                                                const double *__restrict__ b_gate,
+                                                const double *__restrict__ w_slstm,
+                                                const double *__restrict__ w_mlstm,
+                                                const double *__restrict__ grad_x,
+                                                const double *__restrict__ grad_h_prev,
+                                                const double *__restrict__ grad_c_prev,
+                                                const double *__restrict__ grad_C_prev,
+                                                const double *__restrict__ grad_n_prev,
+                                                const double *__restrict__ grad_w_proj,
+                                                const double *__restrict__ grad_w_gate,
+                                                const double *__restrict__ grad_b_proj,
+                                                const double *__restrict__ grad_b_gate,
+                                                const double *__restrict__ grad_w_slstm,
+                                                const double *__restrict__ grad_w_mlstm,
+                                                const double *__restrict__ grad_b_slstm,
+                                                const double *__restrict__ grad_b_mlstm,
+                                                int batch_size,
+                                                int input_size,
+                                                int hidden_size,
+                                                int proj_size,
+                                                bool use_mlstm);
 
 // Launch the xLSTM block forward pass kernel
 template <typename T>
@@ -292,19 +685,20 @@ void launch_xlstm_block_backward(const T *grad_h,
                                  const T *C,
                                  const T *n,
                                  const T *x,
-                                 T *w_proj,
-                                 T *w_gate,
+                                 const T *w_proj,
+                                 const T *w_gate,
+                                 const T *b_gate,
                                  const T *w_slstm,
                                  const T *w_mlstm,
-                                 T *grad_x,
-                                 T *grad_h_prev,
-                                 T *grad_c_prev,
-                                 T *grad_C_prev,
-                                 T *grad_n_prev,
-                                 T *grad_w_proj,
-                                 T *grad_w_gate,
-                                 T *grad_b_proj,
-                                 T *grad_b_gate,
+                                 const T *grad_x,
+                                 const T *grad_h_prev,
+                                 const T *grad_c_prev,
+                                 const T *grad_C_prev,
+                                 const T *grad_n_prev,
+                                 const T *grad_w_proj,
+                                 const T *grad_w_gate,
+                                 const T *grad_b_proj,
+                                 const T *grad_b_gate,
                                  const T *grad_w_slstm,
                                  const T *grad_w_mlstm,
                                  const T *grad_b_slstm,
@@ -321,7 +715,7 @@ void launch_xlstm_block_backward(const T *grad_h,
     xlstm_block_backward_kernel<T><<<grid, block>>>(grad_h,
                                                     h, c, C, n,
                                                     x,
-                                                    w_proj, w_gate, w_slstm, w_mlstm,
+                                                    w_proj, w_gate, b_gate, w_slstm, w_mlstm,
                                                     grad_x,
                                                     grad_h_prev, grad_c_prev,
                                                     grad_C_prev, grad_n_prev,
@@ -332,3 +726,109 @@ void launch_xlstm_block_backward(const T *grad_h,
                                                     batch_size, input_size, hidden_size, proj_size,
                                                     use_mlstm);
 }
+
+template void launch_xlstm_block_forward<float>(const float *x,
+                                                const float *h_prev,
+                                                const float *c_prev,
+                                                const float *C_prev,
+                                                const float *n_prev,
+                                                float *h,
+                                                float *c,
+                                                float *C,
+                                                float *n,
+                                                const float *w_proj,
+                                                const float *w_gate,
+                                                const float *b_proj,
+                                                const float *b_gate,
+                                                const float *w_slstm,
+                                                const float *w_mlstm,
+                                                const float *b_slstm,
+                                                const float *b_mlstm,
+                                                int batch_size,
+                                                int input_size,
+                                                int hidden_size,
+                                                int proj_size,
+                                                bool use_mlstm);
+
+template void launch_xlstm_block_forward<double>(const double *x,
+                                                const double *h_prev,
+                                                const double *c_prev,
+                                                const double *C_prev,
+                                                const double *n_prev,
+                                                double *h,
+                                                double *c,
+                                                double *C,
+                                                double *n,
+                                                const double *w_proj,
+                                                const double *w_gate,
+                                                const double *b_proj,
+                                                const double *b_gate,
+                                                const double *w_slstm,
+                                                const double *w_mlstm,
+                                                const double *b_slstm,
+                                                const double *b_mlstm,
+                                                int batch_size,
+                                                int input_size,
+                                                int hidden_size,
+                                                int proj_size,
+                                                bool use_mlstm);
+
+template void launch_xlstm_block_backward<float>(const float *grad_h,
+                                                const float *h,
+                                                const float *c,
+                                                const float *C,
+                                                const float *n,
+                                                const float *x,
+                                                const float *w_proj,
+                                                const float *w_gate,
+                                                const float *b_gate,
+                                                const float *w_slstm,
+                                                const float *w_mlstm,
+                                                const float *grad_x,
+                                                const float *grad_h_prev,
+                                                const float *grad_c_prev,
+                                                const float *grad_C_prev,
+                                                const float *grad_n_prev,
+                                                const float *grad_w_proj,
+                                                const float *grad_w_gate,
+                                                const float *grad_b_proj,
+                                                const float *grad_b_gate,
+                                                const float *grad_w_slstm,
+                                                const float *grad_w_mlstm,
+                                                const float *grad_b_slstm,
+                                                const float *grad_b_mlstm,
+                                                int batch_size,
+                                                int input_size,
+                                                int hidden_size,
+                                                int proj_size,
+                                                bool use_mlstm);
+
+template void launch_xlstm_block_backward<double>(const double *grad_h,
+                                                const double *h,
+                                                const double *c,
+                                                const double *C,
+                                                const double *n,
+                                                const double *x,
+                                                const double *w_proj,
+                                                const double *w_gate,
+                                                const double *b_gate,
+                                                const double *w_slstm,
+                                                const double *w_mlstm,
+                                                const double *grad_x,
+                                                const double *grad_h_prev,
+                                                const double *grad_c_prev,
+                                                const double *grad_C_prev,
+                                                const double *grad_n_prev,
+                                                const double *grad_w_proj,
+                                                const double *grad_w_gate,
+                                                const double *grad_b_proj,
+                                                const double *grad_b_gate,
+                                                const double *grad_w_slstm,
+                                                const double *grad_w_mlstm,
+                                                const double *grad_b_slstm,
+                                                const double *grad_b_mlstm,
+                                                int batch_size,
+                                                int input_size,
+                                                int hidden_size,
+                                                int proj_size,
+                                                bool use_mlstm);

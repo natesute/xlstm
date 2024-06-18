@@ -9,6 +9,7 @@ include_directories(utils)
 include_directories(layers)
 include_directories(blocks)
 include_directories(models)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../cuda/utils)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../cuda/kernels)
 
 # Source files
@@ -27,4 +28,4 @@ add_library(xlstm_cpp STATIC ${XLSTM_SOURCES})
 target_include_directories(xlstm_cpp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Link against the CUDA library
-target_link_libraries(xlstm_cpp xlstm_cuda)
+target_link_libraries(xlstm_cpp PUBLIC xlstm_cuda)
